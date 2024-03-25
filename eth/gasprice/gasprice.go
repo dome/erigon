@@ -62,6 +62,8 @@ type Oracle struct {
 	checkBlocks                       int
 	percentile                        int
 	maxHeaderHistory, maxBlockHistory int
+
+	minSuggestedPriorityFee *big.Int // for Optimism fee suggestion
 }
 
 // NewOracle returns a new gasprice oracle which can recommend suitable
@@ -92,15 +94,16 @@ func NewOracle(backend OracleBackend, params gaspricecfg.Config, cache Cache) *O
 		log.Warn("Sanitizing invalid gasprice oracle ignore price", "provided", params.IgnorePrice, "updated", ignorePrice)
 	}
 	return &Oracle{
-		backend:          backend,
-		lastPrice:        params.Default,
-		maxPrice:         maxPrice,
-		ignorePrice:      ignorePrice,
-		checkBlocks:      blocks,
-		percentile:       percent,
-		cache:            cache,
-		maxHeaderHistory: params.MaxHeaderHistory,
-		maxBlockHistory:  params.MaxBlockHistory,
+		backend:                 backend,
+		lastPrice:               params.Default,
+		maxPrice:                maxPrice,
+		ignorePrice:             ignorePrice,
+		checkBlocks:             blocks,
+		percentile:              percent,
+		cache:                   cache,
+		maxHeaderHistory:        params.MaxHeaderHistory,
+		maxBlockHistory:         params.MaxBlockHistory,
+		minSuggestedPriorityFee: params.MinSuggestedPriorityFee,
 	}
 }
 
